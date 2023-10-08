@@ -1,7 +1,5 @@
-// src/events/events.service.ts
-
 import { Injectable } from '@nestjs/common';
-import { Event } from './entities/event.entity';
+import { Event } from '../entities/event.entity';
 
 @Injectable()
 export class EventsService {
@@ -12,19 +10,22 @@ export class EventsService {
   }
 
   async getEventsByDate(date: string): Promise<Event[]> {
-    return this.events.filter((event) => event.date === date);
+    return this.events.filter((event) => event.startTime === new Date(date));
   }
 
   async getFinishedEventsByDate(date: string): Promise<Event[]> {
     return this.events.filter(
-      (event) => event.date === date && event.status === 'finished',
+      (event) =>
+        event.startTime === new Date(date) && event.status === 'finished',
     );
   }
 
-  async createEvent(event: Event): Promise<Event> {
+  /*   async createEvent(event: EventInput): Promise<Event> {
     // Implementar a lógica para criar um evento
-    // Certifique-se de atribuir IDs únicos aos eventos
+    // Certificar-se de atribuir IDs únicos aos eventos
+    // this.eventGateway.server.emit('liveEvents', event);
+
     this.events.push(event);
     return event;
-  }
+  } */
 }

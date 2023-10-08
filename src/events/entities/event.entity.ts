@@ -1,7 +1,13 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Competition } from './competition.entity';
 import { Team } from './team.entity';
-@Entity('events', { database: 'events_messages' })
+@Entity('events')
 export class Event {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
@@ -10,20 +16,32 @@ export class Event {
   startTime: Date;
 
   @Column()
-  status: 'live' | 'a_iniciar' | 'finalizado';
+  status: 'live' | 'scheduled' | 'finished';
 
-  @OneToOne(() => Team, (team) => team.id)
+  @Column('int')
+  teamAId: number;
+
+  @OneToOne(() => Team)
+  @JoinColumn()
   teamA: Team;
 
   @Column()
   pointsTeamA: number;
 
-  @OneToOne(() => Team, (team) => team.id)
+  @Column('int')
+  teamBId: number;
+
+  @OneToOne(() => Team)
+  @JoinColumn()
   teamB: Team;
 
   @Column()
   pointsTeamB: number;
 
-  @OneToOne(() => Competition, (competition) => competition.id)
+  @Column('int')
+  competitionId: number;
+
+  @OneToOne(() => Competition)
+  @JoinColumn()
   competition: Competition;
 }

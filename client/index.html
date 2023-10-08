@@ -9,7 +9,6 @@
         socket.on('connect', function () {
             console.log('Connected');
             socket.emit('msgToServer', { test: 'test' });
-
         });
         socket.on('msgToClient', function (data) {
             console.log('Client message', data);
@@ -23,6 +22,8 @@
     </script>
 </head>
 
-<body></body>
+<body>
+    <script>document.body.innerHTML = JSON.stringify(socket);</script>
+</body>
 
 </html>
