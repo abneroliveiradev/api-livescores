@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Competition } from './competition.entity';
 import { Team } from './team.entity';
-@Entity('events')
+@Entity('events', { schema: 'sports-events' })
 export class Event {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;

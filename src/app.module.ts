@@ -1,14 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CompetitionController } from './events/controllers/competition.controller';
-import { EventsController } from './events/controllers/events.controller';
-import { TeamController } from './events/controllers/team.controller';
 import { Competition } from './events/entities/competition.entity';
 import { Team } from './events/entities/team.entity';
-import { EventsGateway } from './events/gateways/events.gateway';
-import { CompetitionService } from './events/services/competition.service';
-import { EventsService } from './events/services/events.service';
-import { TeamService } from './events/services/team.service';
+import { EventModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -22,8 +16,9 @@ import { TeamService } from './events/services/team.service';
       entities: [Competition, Event, Team],
       synchronize: false,
     }),
+    EventModule,
   ],
-  controllers: [EventsController, CompetitionController, TeamController],
-  providers: [EventsGateway, EventsService, CompetitionService, TeamService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

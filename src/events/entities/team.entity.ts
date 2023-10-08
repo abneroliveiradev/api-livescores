@@ -1,5 +1,5 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+@Entity('teams', { schema: 'sports-events' })
 export class Team {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: string;

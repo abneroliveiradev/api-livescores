@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Team } from '../entities/team.entity';
 
 @Injectable()
 export class TeamService {
-  findAll() {
-    return `This action returns all team`;
-  }
+  constructor(
+    @InjectRepository(Team)
+    private teamRepository: Repository<Team>,
+  ) {}
 
-  findOne(id: number) {
-    return `This action returns a #${id} team`;
+  public async findAll() {
+    const data = await this.teamRepository.find();
+    return data;
   }
 }
