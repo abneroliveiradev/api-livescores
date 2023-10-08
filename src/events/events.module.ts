@@ -6,6 +6,7 @@ import { TeamController } from './controllers/team.controller';
 import { Competition } from './entities/competition.entity';
 import { Event } from './entities/event.entity';
 import { Team } from './entities/team.entity';
+import { EventsGateway } from './gateways/events.gateway';
 import { CompetitionService } from './services/competition.service';
 import { EventsService } from './services/events.service';
 import { TeamService } from './services/team.service';
@@ -13,7 +14,7 @@ import { TeamService } from './services/team.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Event, Competition, Team])],
   controllers: [CompetitionController, EventsController, TeamController],
-  providers: [CompetitionService, EventsService, TeamService],
+  providers: [CompetitionService, EventsService, TeamService, EventsGateway],
   exports: [],
 })
 export class EventModule {}
