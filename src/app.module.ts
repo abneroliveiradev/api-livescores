@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Competition } from './events/entities/competition.entity';
-import { Team } from './events/entities/team.entity';
 import { EventModule } from './events/events.module';
 
 @Module({
@@ -13,7 +11,7 @@ import { EventModule } from './events/events.module';
       username: 'root',
       password: '1234',
       database: 'sports-events',
-      entities: [Competition, Event, Team],
+      entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false,
     }),
     EventModule,

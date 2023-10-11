@@ -6,52 +6,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-const eventsList = [
-  {
-    id: 1,
-    gameMinute: "30'",
-    teamA: 'Team A',
-    teamB: 'Team B',
-    scoreA: 2,
-    scoreB: 1,
-    eventTime: '2022-01-01',
-    eventDescription: 'Event Description',
-    status: 'live',
-  },
-  {
-    id: 2,
-    gameMinute: "22'",
-    teamA: 'Team A',
-    teamB: 'Team B',
-    scoreA: 2,
-    scoreB: 1,
-    eventTime: '2022-01-01',
-    eventDescription: 'Event Description',
-    status: 'live',
-  },
-  {
-    id: 3,
-    gameMinute: "12'",
-    teamA: 'Team A',
-    teamB: 'Team B',
-    scoreA: 2,
-    scoreB: 1,
-    eventTime: '2022-01-01',
-    eventDescription: 'Event Description',
-    status: 'live',
-  },
-  {
-    id: 4,
-    gameMinute: "4'",
-    teamA: 'Team A',
-    teamB: 'Team B',
-    scoreA: 2,
-    scoreB: 1,
-    eventTime: '2022-01-01',
-    eventDescription: 'Event Description',
-    status: 'live',
-  },
-];
 @WebSocketGateway()
 export class EventsGateway {
   @WebSocketServer() server: Server;

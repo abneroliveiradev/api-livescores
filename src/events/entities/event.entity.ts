@@ -13,10 +13,10 @@ export class Event {
   id: number;
 
   @Column()
-  startTime: Date;
+  startTime: string;
 
   @Column()
-  status: 'live' | 'scheduled' | 'finished';
+  status: string;
 
   @Column('int')
   teamAId: number;
@@ -26,7 +26,7 @@ export class Event {
   teamA: Team;
 
   @Column()
-  pointsTeamA: number;
+  scoreA: number;
 
   @Column('int')
   teamBId: number;
@@ -36,7 +36,7 @@ export class Event {
   teamB: Team;
 
   @Column()
-  pointsTeamB: number;
+  scoreB: number;
 
   @Column('int')
   competitionId: number;
