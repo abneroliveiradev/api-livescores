@@ -1,6 +1,6 @@
 // src/events/events.controller.ts
 
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventsGateway } from '../gateways/events.gateway';
 import { EventsService } from '../services/events.service';
@@ -16,6 +16,12 @@ export class EventsController {
   async findAll(): Promise<any> {
     const events = await this.eventsService.findAll();
     this.eventsGateway.server.emit('msgToClient', events);
+    return events;
+  }
+
+  @Get('finished/:date')
+  async findAllFinished(@Param('date') date: string): Promise<any> {
+    const events = await this.eventsService.findAllFinishedByDate(date);
     return events;
   }
 

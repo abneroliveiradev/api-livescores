@@ -17,6 +17,25 @@ export class EventsService {
     });
   }
 
+  async findAllFinishedByDate(date: string): Promise<Event[]> {
+    return this.eventsRepository.find({
+      relations: ['teamA', 'teamB', 'competition'],
+      where: {
+        status: 'finished',
+        startTime: date,
+      },
+    });
+  }
+
+  async findAllByDate(date: string): Promise<Event[]> {
+    return this.eventsRepository.find({
+      relations: ['teamA', 'teamB', 'competition'],
+      where: {
+        startTime: date,
+      },
+    });
+  }
+
   async checkScheduledEvent(event: CreateEventDto): Promise<Event> {
     const data = await this.eventsRepository.findOne({
       relations: ['teamA', 'teamB', 'competition'],
