@@ -29,10 +29,21 @@ export class EventsController {
       if (existingEvent && status === 'scheduled') {
         throw new Error('Event already exists');
       }
-      // Criando o evento
-      const createdEvent = await this.eventsService.create(event);
-      this.eventsGateway.server.emit('msgToClient', createdEvent);
-      return createdEvent;
+
+      if (existingEvent && ['finished', 'live'].includes(status)) {
+        // Atualiza o evento
+        const updatedEvent = await this.eventsService.update(
+          existingEvent.id,
+          event,
+        );
+        this.eventsGateway.server.emit('msgToClient', updatedEvent);
+        return updatedEvent;
+      } else {
+        // Cria o evento
+        const createdEvent = await this.eventsService.create(event);
+        this.eventsGateway.server.emit('msgToClient', createdEvent);
+        return createdEvent;
+      }
     } catch (error) {
       console.log(error);
       return error;

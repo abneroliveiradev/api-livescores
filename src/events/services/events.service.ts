@@ -44,4 +44,19 @@ export class EventsService {
 
     return res;
   }
+
+  async update(id: number, event: CreateEventDto): Promise<Event> {
+    try {
+      await this.eventsRepository.update(id, event);
+      const res = await this.eventsRepository.findOne({
+        relations: ['teamA', 'teamB', 'competition'],
+        where: {
+          id: id,
+        },
+      });
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

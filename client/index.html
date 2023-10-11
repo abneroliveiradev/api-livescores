@@ -1,29 +1,104 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"
-        integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+    <meta charset="UTF-8">
+    <title>Live Table</title>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
         crossorigin="anonymous"></script>
-    <script>
-        const socket = io('http://localhost:3000');
-        socket.on('connect', function () {
-            console.log('Connected');
-            socket.emit('msgToServer', { test: 'test' });
-        });
-        socket.on('msgToClient', function (data) {
-            console.log('Client message', data);
-        });
-        /* socket.on('exception', function (data) {
-            console.log('event', data);
-        }); */
-        socket.on('disconnect', function () {
-            console.log('Disconnected');
-        });
-    </script>
 </head>
 
 <body>
-    <script>document.body.innerHTML = JSON.stringify(socket);</script>
+    <h1>Live Table</h1>
+    <table id="results-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Minuto</th>
+                <th>Equipe A</th>
+                <th>Gols A</th>
+                <th>Equipe B</th>
+                <th>Gols B</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <h1>Scheduled Table</h1>
+    <table id="scheduled-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data de Início</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <button id="load-scheduled-button">Carregar Eventos Agendados</button>
+
+    <script>
+        // Conectar ao servidor Socket.io
+        const socket = io("http://localhost:3333");
+
+        // Manipular mensagens recebidas do servidor Socket.io
+        socket.on("msgToClient", (data) => {
+            updateTable(data[0]);
+        });
+
+        // Função para atualizar a tabela com os dados recebidos
+        function updateTable(data) {
+            const tableBody = document.querySelector("#results-table tbody");
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${data.id}</td>
+                <td>${data.gameMinute}</td>
+                <td>${data.teamA.name}</td>
+                <td>${data.scoreA}</td>
+                <td>${data.teamB.name}</td>
+                <td>${data.scoreB}</td>
+                <td>${data.eventDescription}</td>
+            `;
+
+            tableBody.appendChild(row);
+        }
+
+        // Função para atualizar a tabela de eventos agendados
+        function updateScheduledTable(event) {
+            const tableBody = document.querySelector("#scheduled-table tbody");
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${event.id}</td>
+                <td>${event.startTime}</td>
+                <td>${event.eventDescription}</td>
+            `;
+
+            tableBody.appendChild(row);
+        }
+
+        // Adicionar um ouvinte de evento para o botão de carregamento de eventos agendados
+        const loadScheduledButton = document.querySelector("#load-scheduled-button");
+        loadScheduledButton.addEventListener("click", () => {
+            // Fazer uma chamada à API para obter os eventos agendados
+            fetch("http://localhost:3333/events")
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(event => {
+                        updateScheduledTable(event);
+                    });
+                })
+                .catch(error => {
+                    console.error("Erro ao obter os eventos agendados:", error);
+                });
+        });
+    </script>
 </body>
 
 </html>
