@@ -11,6 +11,12 @@ export class EventsService {
     private eventsRepository: Repository<Event>,
   ) {}
 
+  async findAll(): Promise<Event[]> {
+    return this.eventsRepository.find({
+      relations: ['teamA', 'teamB', 'competition'],
+    });
+  }
+
   async checkScheduledEvent(event: CreateEventDto): Promise<Event> {
     const data = await this.eventsRepository.findOne({
       relations: ['teamA', 'teamB', 'competition'],

@@ -1,6 +1,6 @@
 // src/events/events.controller.ts
 
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventsGateway } from '../gateways/events.gateway';
 import { EventsService } from '../services/events.service';
@@ -11,6 +11,13 @@ export class EventsController {
     private readonly eventsService: EventsService,
     private readonly eventsGateway: EventsGateway,
   ) {}
+
+  @Get()
+  async findAll(): Promise<any> {
+    const events = await this.eventsService.findAll();
+    this.eventsGateway.server.emit('msgToClient', events);
+    return events;
+  }
 
   @Post()
   async createEvent(@Body() event: CreateEventDto): Promise<any> {
