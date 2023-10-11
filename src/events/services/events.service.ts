@@ -23,8 +23,8 @@ export class EventsService {
     const data = await this.eventsRepository.findOne({
       where: {
         status: 'scheduled',
-        teamAId: event.teamA,
-        teamBId: event.teamB,
+        teamAId: event.teamAId,
+        teamBId: event.teamBId,
         competitionId: event.competitionId,
         startTime: event.startTime,
       },
