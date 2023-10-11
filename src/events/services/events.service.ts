@@ -22,7 +22,7 @@ export class EventsService {
       relations: ['teamA', 'teamB', 'competition'],
       where: {
         status: 'finished',
-        startTime: date,
+        startTime: date, //tratar data de entrada
       },
     });
   }
@@ -31,7 +31,7 @@ export class EventsService {
     return this.eventsRepository.find({
       relations: ['teamA', 'teamB', 'competition'],
       where: {
-        startTime: date,
+        startTime: date, //tratar data de entrada
       },
     });
   }
