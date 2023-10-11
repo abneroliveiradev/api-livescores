@@ -11,16 +11,9 @@ export class EventsService {
     private eventsRepository: Repository<Event>,
   ) {}
 
-  async getLiveEvents(): Promise<Event[]> {
-    return this.eventsRepository.find({
-      where: {
-        status: 'live',
-      },
-    });
-  }
-
-  async getScheduledEvents(event: CreateEventDto): Promise<Event> {
+  async checkScheduledEvent(event: CreateEventDto): Promise<Event> {
     const data = await this.eventsRepository.findOne({
+      relations: ['teamA', 'teamB', 'competition'],
       where: {
         status: 'scheduled',
         teamAId: event.teamAId,
@@ -32,27 +25,17 @@ export class EventsService {
     return data;
   }
 
-  async getEventsByDate(date: string): Promise<Event[]> {
-    return this.eventsRepository.find({
+  async create(event: CreateEventDto): Promise<Event> {
+    const newData = this.eventsRepository.create(event);
+    const savedData = await this.eventsRepository.save(newData);
+
+    const res = await this.eventsRepository.findOne({
+      relations: ['teamA', 'teamB', 'competition'],
       where: {
-        status: 'live',
+        id: savedData.id,
       },
     });
-  }
 
-  async getFinishedEventsByDate(date: string): Promise<Event[]> {
-    return this.eventsRepository.find({
-      where: {
-        status: 'live',
-      },
-    });
-  }
-
-  async createEvent(event: CreateEventDto): Promise<Event> {
-    // Implementar a lógica para criar um evento
-    const createdEvent = this.eventsRepository.create(event);
-    // Certificar-se de atribuir IDs únicos aos eventos
-    // this.eventGateway.server.emit('liveEvents', event);
-    return createdEvent;
+    return res;
   }
 }

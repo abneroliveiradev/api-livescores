@@ -12,6 +12,9 @@ export class Event {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
+  @Column('int')
+  gameMinute: number;
+
   @Column()
   startTime: string;
 
@@ -40,6 +43,9 @@ export class Event {
 
   @Column('int')
   competitionId: number;
+
+  @Column()
+  eventDescription: string;
 
   @OneToOne(() => Competition)
   @JoinColumn()
