@@ -141,9 +141,6 @@ export class EventsService {
         where: {
           eventId: id,
         },
-        order: {
-          id: 'DESC',
-        },
       });
 
       return lastMove;
