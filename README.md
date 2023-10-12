@@ -85,6 +85,10 @@ Após a criação infraestrutura, use o Insomnia para enviar as requisições de
 Para facilitar criei uma coleção de requisições que serve como modelo do processo como um todo.
 Importe no seu Insomnia o arquivo **Insomnia_Exemplo_API_Livescore_2023-10-12.json** que está na pasta root do projeto ou [clique aqui](https://github.com/abneroliveiradev/api-livescores/blob/main/Insomnia_Exemplo_API_Livescore_2023-10-12)
 
+## Exemplo do Uso
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Qnt3FDjg-Bc?si=ht3uJcMMm61EgnzI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 ## Autor
 
 - Author - [Abner Oliveira](https://github.com/abneroliveiradev)
