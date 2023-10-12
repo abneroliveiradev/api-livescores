@@ -12,13 +12,6 @@ export class EventsController {
     private readonly eventsGateway: EventsGateway,
   ) {}
 
-  @Get()
-  async findAll(): Promise<any> {
-    const events = await this.eventsService.findAll();
-    this.eventsGateway.server.emit('msgToClient', events);
-    return events;
-  }
-
   @Get('scheduled')
   async findAllScheduled(): Promise<any> {
     const events = await this.eventsService.findAllScheduled();
@@ -37,9 +30,10 @@ export class EventsController {
     return events;
   }
 
-  @Get('finished/:date')
-  async findAllFinishedByDate(@Param('date') date: string): Promise<any> {
-    const events = await this.eventsService.findAllFinishedByDate(date);
+  @Get('finished/:data')
+  async findAllFinishedByDate(@Param('data') data: string): Promise<any> {
+    console.log('controler', data);
+    const events = await this.eventsService.findAllFinishedByDate(data);
     return events;
   }
 

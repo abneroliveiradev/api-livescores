@@ -58,12 +58,13 @@ export class EventsService {
     });
   }
 
-  async findAllFinishedByDate(date: string): Promise<Event[]> {
+  async findAllFinishedByDate(data: string): Promise<Event[]> {
+    console.log(data);
     return this.eventsRepository.find({
       relations: ['teamA', 'teamB', 'competition'],
       where: {
         status: 'finished',
-        startTime: date, //tratar data de entrada
+        startTime: data,
       },
     });
   }
@@ -72,7 +73,7 @@ export class EventsService {
     return this.eventsRepository.find({
       relations: ['teamA', 'teamB', 'competition', 'moves'],
       where: {
-        startTime: date, //tratar data de entrada
+        startTime: date,
       },
     });
   }
