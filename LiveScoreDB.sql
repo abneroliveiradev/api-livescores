@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `sports-events` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `sports-events`;
 -- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: sports-events
@@ -62,7 +64,7 @@ CREATE TABLE `events` (
   CONSTRAINT `events_ibfk_1` FOREIGN KEY (`teamAId`) REFERENCES `teams` (`id`),
   CONSTRAINT `events_ibfk_2` FOREIGN KEY (`teamBId`) REFERENCES `teams` (`id`),
   CONSTRAINT `events_ibfk_3` FOREIGN KEY (`competitionId`) REFERENCES `competitions` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +91,7 @@ CREATE TABLE `moves` (
   PRIMARY KEY (`id`),
   KEY `fk-event-move_idx` (`eventId`),
   CONSTRAINT `fk-event-move` FOREIGN KEY (`eventId`) REFERENCES `events` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,4 +137,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-12 11:03:02
+-- Dump completed on 2023-10-12 16:29:23
