@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Event } from './event.entity';
 @Entity('moves', { schema: 'sports-events' })
 export class Move {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
@@ -9,4 +10,7 @@ export class Move {
 
   @Column({ type: 'varchar', name: 'description' })
   description: string;
+
+  @ManyToOne(() => Event, (event) => event.moves)
+  event: Event;
 }

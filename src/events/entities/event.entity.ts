@@ -2,18 +2,17 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Competition } from './competition.entity';
+import { Move } from './move.entity';
 import { Team } from './team.entity';
 @Entity('events', { schema: 'sports-events' })
 export class Event {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-
-  @Column('int')
-  gameMinute: number;
 
   @Column()
   startTime: string;
@@ -44,10 +43,10 @@ export class Event {
   @Column('int')
   competitionId: number;
 
-  @Column()
-  eventDescription: string;
-
   @OneToOne(() => Competition)
   @JoinColumn()
   competition: Competition;
+
+  @OneToMany(() => Move, (move) => move.event)
+  moves: Move[];
 }
