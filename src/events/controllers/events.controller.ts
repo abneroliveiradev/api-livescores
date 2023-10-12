@@ -42,27 +42,33 @@ export class EventsController {
   async createEvent(@Body() event: CreateEventDto): Promise<any> {
     try {
       const { status } = event;
-
+      console.log(event);
       // Verificar se evento já exsite (teamA + teamB + competition + date)
       const existingEvent = await this.eventsService.checkEventExists(event);
 
-      if (existingEvent.status === 'finished' && status === 'live') {
-        throw new Error('event already finished');
-      }
-
-      if (existingEvent.status === 'finished' && status === 'scheduled') {
-        throw new Error('event already finished');
-      }
-
-      if (existingEvent.status === 'live' && status === 'scheduled') {
-        throw new Error('event already starded');
-      }
-
-      if (existingEvent.status === 'scheduled' && status === 'scheduled') {
-        throw new Error('event already scheduled');
-      }
-
       if (existingEvent) {
+        if (existingEvent.status === 'finished' && event.status === 'live') {
+          throw new Error('event already finished');
+        }
+
+        if (
+          existingEvent.status === 'finished' &&
+          event.status === 'scheduled'
+        ) {
+          throw new Error('event already finished');
+        }
+
+        if (existingEvent.status === 'live' && event.status === 'scheduled') {
+          throw new Error('event already starded');
+        }
+
+        if (
+          existingEvent.status === 'scheduled' &&
+          event.status === 'scheduled'
+        ) {
+          throw new Error('event already scheduled');
+        }
+
         // Verifica se o evento está finalizado
         if (existingEvent.status === 'finished') {
           throw new Error('event already finished');

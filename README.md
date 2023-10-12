@@ -1,73 +1,96 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+<p  align="center">
+<a  href="http://nestjs.com/"  target="blank"><img  src="https://nestjs.com/img/logo-small.svg"  width="200"  alt="Nest Logo"  /></a>
 </p>
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<h1  align="center">API Livescore</h1>
 
-## Description
+## Descrição
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Aplicação usando NestJS e WebSockets a fim de apresentar dados de jogos de futebol em tempo real.
 
-## Installation
+## Instalação
 
 ```bash
-$ npm install
+$  git clone https://github.com/abneroliveiradev/api-livescores.git
+$  npm install
 ```
 
-## Running the app
+## Rodando a API Livescore
 
 ```bash
-# development
-$ npm run start
+# modo desenvolvimento
+$  npm run start
 
-# watch mode
-$ npm run start:dev
+# modo debug
+$  npm run start:dev
 
-# production mode
-$ npm run start:prod
+# modo produção
+$  npm run build
+$  npm run start:prod
 ```
 
-## Test
+A API roda em http://localhost:3333
+
+## Rodar o Cliente
 
 ```bash
-# unit tests
-$ npm run test
+# clonar o projeto
+$ git clone https://github.com/abneroliveiradev/client-livescores.git
+# rodar em modo desenvolvimento
+$ yarn
+$ yarn dev
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Rodar via docker
+# Criar a imagem
+$ docker build -t livescore-client .
+# Criar o container
+$ docker run -d --name client-livescore -p 80:5137 -t livescore-client
 ```
 
-## Support
+O cliente roda em http://localhost
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Banco de dados
 
-## Stay in touch
+Para rodar a aplicação é necessário um MySQL 8.0 rodando na porta 3306
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+# Rodar via docker
+# Criar o container
+$ docker run -d --name mysql-livescores -p 80:5137 -t livescores-client
+```
 
-## License
+Depois de criado o MySQL rode o script [LivescoresDB.sql](https://github.com/abneroliveiradev/api-livescores/blob/main/LiveScoreDB.sql) (pasta root do projeto) no seu SGBD para criar o banco de dados e as tabelas necessárias.
+
+## Como usar
+
+Após a criação infraestrutura, use o Insomnia para enviar as requisições de eventos para a rota POST /events de acordo com o modelo de corpo de requisição abaixo:
+
+```
+{
+  "gameMinute": 0,
+  "competitionId": 1,
+  "teamAId": 4,
+  "teamBId": 3,
+  "scoreA": 0,
+  "scoreB": 0,
+  "startTime": "2022-01-02 16:00:00",
+  "eventDescription": "Jogo 4 - agendado",
+  "status": "scheduled"
+}
+```
+
+Para facilitar criei uma coleção de requisições que serve como modelo do processo como um todo.
+Importe no seu Insomnia o arquivo **Insomnia_Exemplo_API_Livescore_2023-10-12.json** que está na pasta root do projeto ou [clique aqui](https://github.com/abneroliveiradev/api-livescores/blob/main/Insomnia_Exemplo_API_Livescore_2023-10-12)
+
+## Autor
+
+- Author - [Abner Oliveira](https://github.com/abneroliveiradev)
+
+- Website - [Blog](https://abneroliveira.vercel.app/)
+
+## Licença
 
 Nest is [MIT licensed](LICENSE).
