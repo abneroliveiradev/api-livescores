@@ -1,6 +1,7 @@
 // src/events/events.controller.ts
 
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import handleError from 'src/commons/handlers/handleError';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventsGateway } from '../gateways/events.gateway';
 import { EventsService } from '../services/events.service';
@@ -45,15 +46,27 @@ export class EventsController {
       // Verificar se evento já exsite (teamA + teamB + competition + date)
       const existingEvent = await this.eventsService.checkEventExists(event);
 
+      if (existingEvent.status === 'finished' && status === 'live') {
+        throw new Error('event already finished');
+      }
+
+      if (existingEvent.status === 'finished' && status === 'scheduled') {
+        throw new Error('event already finished');
+      }
+
+      if (existingEvent.status === 'live' && status === 'scheduled') {
+        throw new Error('event already starded');
+      }
+
       if (existingEvent) {
         // Verifica se o evento está finalizado
         if (existingEvent.status === 'finished') {
-          throw new Error('Evento já finalizado');
+          throw new Error('event already finished');
         }
 
         if (status === 'finished') {
           // Finalizar evento
-          console.log('finalizar evento');
+          // console.log('finalizar evento');
           const finishedEvent = await this.eventsService.update(
             existingEvent.id,
             event,
@@ -75,7 +88,7 @@ export class EventsController {
 
         // Tornar evento em andamento
         if (status === 'live') {
-          console.log('em andamento');
+          // console.log('em andamento');
 
           const liveMoveEvent = await this.eventsService.update(
             existingEvent.id,
@@ -101,10 +114,9 @@ export class EventsController {
         this.eventsGateway.server.emit('scheduledGames', scheduledEventList);
         return createdEvent;
       }
-      return 'Não é possivel agendar um jogo já iniciado';
     } catch (error) {
       console.log(error);
-      return error;
+      handleError(error);
     }
   }
 }
