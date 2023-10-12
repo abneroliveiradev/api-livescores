@@ -19,8 +19,20 @@ export class EventsController {
     return events;
   }
 
+  @Get('scheduled')
+  async findAllScheduled(): Promise<any> {
+    const events = await this.eventsService.findAllScheduled();
+    return events;
+  }
+
+  @Get('finished')
+  async findAllFinished(): Promise<any> {
+    const events = await this.eventsService.findAllFinished();
+    return events;
+  }
+
   @Get('finished/:date')
-  async findAllFinished(@Param('date') date: string): Promise<any> {
+  async findAllFinishedByDate(@Param('date') date: string): Promise<any> {
     const events = await this.eventsService.findAllFinishedByDate(date);
     return events;
   }
@@ -29,7 +41,16 @@ export class EventsController {
   async createEvent(@Body() event: CreateEventDto): Promise<any> {
     try {
       const { status } = event;
-      // Dados sendo validado pelo class-validator
+
+      //Verificar se o evento já foi finalizado
+      if (status === 'finished') {
+        const finishedEvent =
+          await this.eventsService.checkFinishedEvent(event);
+        if (finishedEvent) {
+          throw new Error('Event has already been finished');
+        }
+      }
+
       // Verificar se chave unica ja existe (teamA, teamB, competition, date)
       const existingEvent = await this.eventsService.checkScheduledEvent(event);
       if (existingEvent && status === 'scheduled') {
@@ -37,17 +58,30 @@ export class EventsController {
       }
 
       if (existingEvent && ['finished', 'live'].includes(status)) {
+        //Finaliza o evento
+        if (status === 'finished') {
+          const finishedEvent = await this.eventsService.update(
+            existingEvent.id,
+            event,
+          );
+          this.eventsGateway.server.emit('finishedGames', finishedEvent);
+          return finishedEvent;
+        }
         // Atualiza o evento
-        const updatedEvent = await this.eventsService.update(
-          existingEvent.id,
-          event,
-        );
-        this.eventsGateway.server.emit('msgToClient', updatedEvent);
-        return updatedEvent;
+        if (status === 'live') {
+          const finishedEvent = await this.eventsService.update(
+            existingEvent.id,
+            event,
+          );
+          this.eventsGateway.server.emit('liveGames', finishedEvent);
+          return finishedEvent;
+        }
       } else {
         // Cria o evento
         const createdEvent = await this.eventsService.create(event);
-        this.eventsGateway.server.emit('msgToClient', createdEvent);
+        const scheduledEventList = await this.eventsService.findAllScheduled();
+        console.log(scheduledEventList);
+        this.eventsGateway.server.emit('scheduledGames', scheduledEventList);
         return createdEvent;
       }
     } catch (error) {

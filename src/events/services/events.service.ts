@@ -14,6 +14,33 @@ export class EventsService {
   async findAll(): Promise<Event[]> {
     return this.eventsRepository.find({
       relations: ['teamA', 'teamB', 'competition'],
+      order: {
+        id: 'DESC',
+      },
+    });
+  }
+
+  async findAllScheduled(): Promise<Event[]> {
+    return this.eventsRepository.find({
+      relations: ['teamA', 'teamB', 'competition'],
+      where: {
+        status: 'scheduled',
+      },
+      order: {
+        id: 'DESC',
+      },
+    });
+  }
+
+  async findAllFinished(): Promise<Event[]> {
+    return this.eventsRepository.find({
+      relations: ['teamA', 'teamB', 'competition'],
+      where: {
+        status: 'finished',
+      },
+      order: {
+        id: 'DESC',
+      },
     });
   }
 
@@ -41,6 +68,20 @@ export class EventsService {
       relations: ['teamA', 'teamB', 'competition'],
       where: {
         status: 'scheduled',
+        teamAId: event.teamAId,
+        teamBId: event.teamBId,
+        competitionId: event.competitionId,
+        startTime: event.startTime,
+      },
+    });
+    return data;
+  }
+
+  async checkFinishedEvent(event: CreateEventDto): Promise<Event> {
+    const data = await this.eventsRepository.findOne({
+      relations: ['teamA', 'teamB', 'competition'],
+      where: {
+        status: 'finished',
         teamAId: event.teamAId,
         teamBId: event.teamBId,
         competitionId: event.competitionId,
