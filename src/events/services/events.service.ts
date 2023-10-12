@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { Event } from '../entities/event.entity';
+import { Move } from '../entities/move.entity';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectRepository(Event)
     private eventsRepository: Repository<Event>,
+    @InjectRepository(Move)
+    private movesRepository: Repository<Move>,
   ) {}
 
   async findAll(): Promise<Event[]> {
@@ -94,6 +97,13 @@ export class EventsService {
   async create(event: CreateEventDto): Promise<Event> {
     const newData = this.eventsRepository.create(event);
     const savedData = await this.eventsRepository.save(newData);
+
+    const newMove = this.movesRepository.create({
+      minute: event.gameMinute,
+      description: event.eventDescription,
+      eventId: savedData.id,
+    });
+    await this.movesRepository.save(newMove);
 
     const res = await this.eventsRepository.findOne({
       relations: ['teamA', 'teamB', 'competition', 'moves'],

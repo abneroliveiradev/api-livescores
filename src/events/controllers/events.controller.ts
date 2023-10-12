@@ -4,12 +4,14 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventsGateway } from '../gateways/events.gateway';
 import { EventsService } from '../services/events.service';
+import { MovesService } from '../services/moves.service';
 
 @Controller('events')
 export class EventsController {
   constructor(
     private readonly eventsService: EventsService,
     private readonly eventsGateway: EventsGateway,
+    private readonly movesService: MovesService,
   ) {}
 
   @Get()
@@ -29,6 +31,7 @@ export class EventsController {
   @Get('finished')
   async findAllFinished(): Promise<any> {
     const events = await this.eventsService.findAllFinished();
+    console.log(events);
     return events;
   }
 
