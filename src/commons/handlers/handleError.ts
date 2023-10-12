@@ -14,7 +14,7 @@ const handleError = (error) => {
     throw new HttpException(
       {
         status: 403,
-        message: 'Evento já finalizado.',
+        message: 'Evento já agendado.',
       },
       HttpStatus.UNAUTHORIZED,
     );

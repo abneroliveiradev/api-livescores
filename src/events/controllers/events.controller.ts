@@ -58,6 +58,10 @@ export class EventsController {
         throw new Error('event already starded');
       }
 
+      if (existingEvent.status === 'scheduled' && status === 'scheduled') {
+        throw new Error('event already scheduled');
+      }
+
       if (existingEvent) {
         // Verifica se o evento está finalizado
         if (existingEvent.status === 'finished') {
