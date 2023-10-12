@@ -22,6 +22,7 @@ export class EventsController {
   @Get('scheduled')
   async findAllScheduled(): Promise<any> {
     const events = await this.eventsService.findAllScheduled();
+    console.log(events);
     return events;
   }
 

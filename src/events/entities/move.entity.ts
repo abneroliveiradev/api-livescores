@@ -11,6 +11,9 @@ export class Move {
   @Column({ type: 'varchar', name: 'description' })
   description: string;
 
+  @Column('int')
+  eventId: number;
+
   @ManyToOne(() => Event, (event) => event.moves)
   event: Event;
 }

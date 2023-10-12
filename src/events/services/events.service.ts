@@ -13,7 +13,7 @@ export class EventsService {
 
   async findAll(): Promise<Event[]> {
     return this.eventsRepository.find({
-      relations: ['teamA', 'teamB', 'competition'],
+      relations: ['teamA', 'teamB', 'competition', 'moves'],
       order: {
         id: 'DESC',
       },
@@ -22,7 +22,7 @@ export class EventsService {
 
   async findAllScheduled(): Promise<Event[]> {
     return this.eventsRepository.find({
-      relations: ['teamA', 'teamB', 'competition'],
+      relations: ['teamA', 'teamB', 'competition', 'moves'],
       where: {
         status: 'scheduled',
       },
@@ -34,7 +34,7 @@ export class EventsService {
 
   async findAllFinished(): Promise<Event[]> {
     return this.eventsRepository.find({
-      relations: ['teamA', 'teamB', 'competition'],
+      relations: ['teamA', 'teamB', 'competition', 'moves'],
       where: {
         status: 'finished',
       },
@@ -56,7 +56,7 @@ export class EventsService {
 
   async findAllByDate(date: string): Promise<Event[]> {
     return this.eventsRepository.find({
-      relations: ['teamA', 'teamB', 'competition'],
+      relations: ['teamA', 'teamB', 'competition', 'moves'],
       where: {
         startTime: date, //tratar data de entrada
       },
@@ -79,7 +79,7 @@ export class EventsService {
 
   async checkFinishedEvent(event: CreateEventDto): Promise<Event> {
     const data = await this.eventsRepository.findOne({
-      relations: ['teamA', 'teamB', 'competition'],
+      relations: ['teamA', 'teamB', 'competition', 'moves'],
       where: {
         status: 'finished',
         teamAId: event.teamAId,
@@ -96,7 +96,7 @@ export class EventsService {
     const savedData = await this.eventsRepository.save(newData);
 
     const res = await this.eventsRepository.findOne({
-      relations: ['teamA', 'teamB', 'competition'],
+      relations: ['teamA', 'teamB', 'competition', 'moves'],
       where: {
         id: savedData.id,
       },
