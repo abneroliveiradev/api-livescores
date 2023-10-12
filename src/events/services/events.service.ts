@@ -46,6 +46,17 @@ export class EventsService {
       },
     });
   }
+  async findAllLive(): Promise<Event[]> {
+    return this.eventsRepository.find({
+      relations: ['teamA', 'teamB', 'competition', 'moves'],
+      where: {
+        status: 'live',
+      },
+      order: {
+        id: 'DESC',
+      },
+    });
+  }
 
   async findAllFinishedByDate(date: string): Promise<Event[]> {
     return this.eventsRepository.find({
@@ -121,7 +132,7 @@ export class EventsService {
         description: event.eventDescription,
         eventId: id,
       });
-      await this.movesRepository.save(newMove);
+      const savedMove = await this.movesRepository.save(newMove);
 
       const eventObj = {
         id: id,
@@ -139,7 +150,7 @@ export class EventsService {
       const lastMove = await this.movesRepository.findOne({
         relations: ['event', 'event.teamA', 'event.teamB', 'event.competition'],
         where: {
-          eventId: id,
+          id: savedMove.id,
         },
       });
 

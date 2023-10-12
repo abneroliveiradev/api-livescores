@@ -25,6 +25,12 @@ export class EventsController {
     return events;
   }
 
+  @Get('live')
+  async findAllLive(): Promise<any> {
+    const events = await this.eventsService.findAllLive();
+    return events;
+  }
+
   @Get('finished')
   async findAllFinished(): Promise<any> {
     const events = await this.eventsService.findAllFinished();
@@ -44,7 +50,6 @@ export class EventsController {
 
       // Verificar se evento já exsite (teamA + teamB + competition + date)
       const existingEvent = await this.eventsService.checkEventExists(event);
-      console.log('checkEventExists', existingEvent);
 
       if (existingEvent) {
         // Verifica se o evento está finalizado
@@ -59,7 +64,18 @@ export class EventsController {
             existingEvent.id,
             event,
           );
-          this.eventsGateway.server.emit('finishedGames', finishedEvent);
+
+          this.eventsGateway.server.emit('liveMoves', finishedEvent);
+
+          const finisheds = await this.eventsService.findAllFinished();
+          this.eventsGateway.server.emit('finishedGames', finisheds);
+
+          const scheduleds = await this.eventsService.findAllScheduled();
+          this.eventsGateway.server.emit('scheduledGames', scheduleds);
+
+          const lives = await this.eventsService.findAllLive();
+          this.eventsGateway.server.emit('liveGames', lives);
+
           return finishedEvent;
         }
 
@@ -71,8 +87,16 @@ export class EventsController {
             existingEvent.id,
             event,
           );
-          console.log('liveMoveEvent', liveMoveEvent);
           this.eventsGateway.server.emit('liveMoves', liveMoveEvent);
+
+          const finisheds = await this.eventsService.findAllFinished();
+          this.eventsGateway.server.emit('finishedGames', finisheds);
+
+          const scheduleds = await this.eventsService.findAllScheduled();
+          this.eventsGateway.server.emit('scheduledGames', scheduleds);
+
+          const lives = await this.eventsService.findAllLive();
+          this.eventsGateway.server.emit('liveGames', lives);
           return liveMoveEvent;
         }
       } else {
@@ -83,7 +107,7 @@ export class EventsController {
         this.eventsGateway.server.emit('scheduledGames', scheduledEventList);
         return createdEvent;
       }
-      return 'ok';
+      return 'Não é possivel agendar um jogo já iniciado';
     } catch (error) {
       console.log(error);
       return error;
