@@ -66,11 +66,10 @@ export class EventsService {
     });
   }
 
-  async checkScheduledEvent(event: CreateEventDto): Promise<Event> {
+  async checkEventExists(event: CreateEventDto): Promise<Event> {
     const data = await this.eventsRepository.findOne({
       relations: ['teamA', 'teamB', 'competition'],
       where: {
-        status: 'scheduled',
         teamAId: event.teamAId,
         teamBId: event.teamBId,
         competitionId: event.competitionId,
@@ -115,7 +114,7 @@ export class EventsService {
     return res;
   }
 
-  async update(id: number, event: CreateEventDto): Promise<Event> {
+  async update(id: number, event: CreateEventDto): Promise<any> {
     try {
       const newMove = this.movesRepository.create({
         minute: event.gameMinute,
@@ -124,14 +123,30 @@ export class EventsService {
       });
       await this.movesRepository.save(newMove);
 
-      await this.eventsRepository.update(id, event);
-      const res = await this.eventsRepository.findOne({
-        relations: ['teamA', 'teamB', 'competition', 'moves'],
+      const eventObj = {
+        id: id,
+        startTime: event.startTime,
+        status: event.status,
+        teamAId: event.teamAId,
+        scoreA: event.scoreA,
+        teamBId: event.teamBId,
+        scoreB: event.scoreB,
+        competitionId: event.competitionId,
+      };
+
+      await this.eventsRepository.update(id, eventObj);
+      // Montar retorno do ultimo move registrado
+      const lastMove = await this.movesRepository.findOne({
+        relations: ['event', 'event.teamA', 'event.teamB', 'event.competition'],
         where: {
-          id: id,
+          eventId: id,
+        },
+        order: {
+          id: 'DESC',
         },
       });
-      return res;
+
+      return lastMove;
     } catch (error) {
       console.log(error);
     }

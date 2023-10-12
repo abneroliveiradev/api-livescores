@@ -4,14 +4,12 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventsGateway } from '../gateways/events.gateway';
 import { EventsService } from '../services/events.service';
-import { MovesService } from '../services/moves.service';
 
 @Controller('events')
 export class EventsController {
   constructor(
     private readonly eventsService: EventsService,
     private readonly eventsGateway: EventsGateway,
-    private readonly movesService: MovesService,
   ) {}
 
   @Get()
@@ -24,14 +22,12 @@ export class EventsController {
   @Get('scheduled')
   async findAllScheduled(): Promise<any> {
     const events = await this.eventsService.findAllScheduled();
-    console.log(events);
     return events;
   }
 
   @Get('finished')
   async findAllFinished(): Promise<any> {
     const events = await this.eventsService.findAllFinished();
-    console.log(events);
     return events;
   }
 
@@ -46,24 +42,19 @@ export class EventsController {
     try {
       const { status } = event;
 
-      //Verificar se o evento já foi finalizado
-      if (status === 'finished') {
-        const finishedEvent =
-          await this.eventsService.checkFinishedEvent(event);
-        if (finishedEvent) {
-          throw new Error('Event has already been finished');
+      // Verificar se evento já exsite (teamA + teamB + competition + date)
+      const existingEvent = await this.eventsService.checkEventExists(event);
+      console.log('checkEventExists', existingEvent);
+
+      if (existingEvent) {
+        // Verifica se o evento está finalizado
+        if (existingEvent.status === 'finished') {
+          throw new Error('Evento já finalizado');
         }
-      }
 
-      // Verificar se chave unica ja existe (teamA, teamB, competition, date)
-      const existingEvent = await this.eventsService.checkScheduledEvent(event);
-      if (existingEvent && status === 'scheduled') {
-        throw new Error('Event already exists');
-      }
-
-      if (existingEvent && ['finished', 'live'].includes(status)) {
-        //Finaliza o evento
         if (status === 'finished') {
+          // Finalizar evento
+          console.log('finalizar evento');
           const finishedEvent = await this.eventsService.update(
             existingEvent.id,
             event,
@@ -71,23 +62,28 @@ export class EventsController {
           this.eventsGateway.server.emit('finishedGames', finishedEvent);
           return finishedEvent;
         }
-        // Atualiza o evento
+
+        // Tornar evento em andamento
         if (status === 'live') {
-          const finishedEvent = await this.eventsService.update(
+          console.log('em andamento');
+
+          const liveMoveEvent = await this.eventsService.update(
             existingEvent.id,
             event,
           );
-          this.eventsGateway.server.emit('liveGames', finishedEvent);
-          return finishedEvent;
+          console.log('liveMoveEvent', liveMoveEvent);
+          this.eventsGateway.server.emit('liveMoves', liveMoveEvent);
+          return liveMoveEvent;
         }
       } else {
+        // Obrigatoriamente tem que ter status 'scheduled'
         // Cria o evento
         const createdEvent = await this.eventsService.create(event);
         const scheduledEventList = await this.eventsService.findAllScheduled();
-        console.log(scheduledEventList);
         this.eventsGateway.server.emit('scheduledGames', scheduledEventList);
         return createdEvent;
       }
+      return 'ok';
     } catch (error) {
       console.log(error);
       return error;
