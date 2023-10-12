@@ -117,9 +117,16 @@ export class EventsService {
 
   async update(id: number, event: CreateEventDto): Promise<Event> {
     try {
+      const newMove = this.movesRepository.create({
+        minute: event.gameMinute,
+        description: event.eventDescription,
+        eventId: id,
+      });
+      await this.movesRepository.save(newMove);
+
       await this.eventsRepository.update(id, event);
       const res = await this.eventsRepository.findOne({
-        relations: ['teamA', 'teamB', 'competition'],
+        relations: ['teamA', 'teamB', 'competition', 'moves'],
         where: {
           id: id,
         },
